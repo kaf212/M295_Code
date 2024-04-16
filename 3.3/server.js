@@ -3,16 +3,16 @@ const app = express();
 const port = 3000;
 
 
-app.use("/now", (req, res)=>{
+app.use("/now", (req, res) => {
     res.send(`${new Date().toLocaleTimeString()}`)
 })
 
-app.use("/zli", (req,res)=>{
+app.use("/zli", (req, res) => {
     res.redirect("https://www.zli.ch/")
 })
 
 
-app.use("/name", (req,res)=>{
+app.use("/name", (req, res) => {
     const random = Math.floor(Math.random() * (19 - 0))
     const names = [
         "Isabelle",
@@ -39,32 +39,32 @@ app.use("/name", (req,res)=>{
     res.send(names[random])
 })
 
-app.use("/html", (req,res)=>{
+app.use("/html", (req, res) => {
     res.sendFile(`${__dirname}/html.html`)
 })
 
-app.use("/image", (req,res)=>{
+app.use("/image", (req, res) => {
     res.sendFile(`${__dirname}/pz87.jpg`)
 })
 
-app.use("/teapot", (req,res)=>{
+app.use("/teapot", (req, res) => {
     res.send(418)
 })
 
-app.use("/user-agent", (req,res)=>{
+app.use("/user-agent", (req, res) => {
     res.send(req.rawHeaders[15])
 })
 
 
-app.use("/secret", (req,res)=>{
+app.use("/secret", (req, res) => {
     res.send(403)
 })
 
-app.use("/xml", (req,res)=>{
+app.use("/xml", (req, res) => {
     res.sendFile(`${__dirname}/xml.xml`)
 })
 
-app.use("/me", (req,res)=>{
+app.use("/me", (req, res) => {
     res.send({
         "Vorname": "Jan",
         "Nachname": "Atzgerstorfer",
@@ -75,6 +75,6 @@ app.use("/me", (req,res)=>{
 })
 
 
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
