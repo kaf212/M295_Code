@@ -21,15 +21,21 @@ function getData(url) {
     });
 }
 
-app.get('/weather/:plz', async (req, res) => {
-    const url = `https://app-prod-ws.meteoswiss-app.ch/v1/plzDetail?plz=${req.params.plz}00`
-    try {
-        const data = await getData(url);
-        res.send(data.currentWeather.temperature.toString());
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('Internal Server Error');
-    }
+async function getTemperature(zip) {
+    const response = await fetch(`https://app-prod-ws.meteoswiss-app.ch/v1/plzDetail?plz=${zip}00`)
+    const json = await response.json()
+    console.log(json)
+    return json
+
+}
+
+app.get('/weather', async (req, res) => {
+    const data = await getTemperature(req.query.plz)
+
+    res.send(data.currentWeather.temperature.toString());
+
+
+
 });
 
 app.listen(port, () => {
