@@ -121,7 +121,7 @@ app.get("/books/:isbn", (req, res) => {
 
 app.post("/books", (req, res) => {
     if (! validateBookJSON(req.body)) {
-        res.status(422)
+        res.send(422)
         console.log(false)
 
     }
@@ -135,9 +135,8 @@ app.post("/books", (req, res) => {
 
 app.put("/books/:isbn", (req, res) => {
     if (! validateBookJSON(req.body)) {
-        res.status(422)
+        res.send(422)
         console.log(false)
-
     }
     else {
         books.forEach(book => {
@@ -164,7 +163,7 @@ app.delete("/books/:isbn", (req, res) => {
 
 app.patch("/books/:isbn", (req, res) => {
     if (! validateBookJSON(req.body)) {
-        res.status(422)
+        res.send(422)
         console.log(false)
 
     }
