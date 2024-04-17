@@ -197,6 +197,15 @@ function validateLendJSON(json) {
     return true
 }
 
+function bookExists(isbn) {
+    if (books.find(book => book.isbn === isbn) === undefined) {
+        return false
+    }
+    else {
+        return true
+    }
+}
+
 function isBorrowed(isbn) {
     let isBorrowed = false
     lends.filter(lend => lend.isbn === isbn).forEach(item => {
@@ -299,8 +308,11 @@ app.get("/lends/:id", (req, res) => {
 app.post("/lends", (req, res) => {
     let newLend = req.body
     newLend.borrowed_at = new Date().toLocaleDateString()
-    if (!validateBookJSON(newLend)) {
-        res.send(422)
+    if (!validateLendJSON(newLend)) {
+        return res.status(422).send("Invalid JSON")
+    }
+    if (!bookExists(newLend.isbn)) {
+        return res.status(404).send(`No book with ISBN '${newLend.isbn}' was found.`)
     }
     if (isBorrowed(newLend.isbn)) {
         return res.status(423).send("Book is already borrowed")
