@@ -198,7 +198,7 @@ function requireAuth(req, res, next) {
 
 // Request validation functions
 function validateBookJSON(json) {
-    for (key in json) {
+    for (const key in json) {
         if (json[key] === "" || json[key] === undefined) {
             return false
         }
@@ -207,7 +207,7 @@ function validateBookJSON(json) {
 }
 
 function validateLendJSON(json) {
-    for (key in json) {
+    for (const key in json) {
         if ((json[key] === "" || json[key] === undefined) && key !== "returned_at") {
             return false
         }
@@ -272,7 +272,9 @@ app.delete("/logout", (req, res)=>{
     try {
         req.session.authenticated = false
         return res.status(204).send("Logout successful")
-    } catch (TypeError) {}
+    } catch (TypeError) {
+        return res.send("No user has been logged in")
+    }
 })
 
 app.get("/books", (req, res) => {
