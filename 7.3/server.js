@@ -4,11 +4,14 @@ const port = 3000
 const basicAuth = require('express-basic-auth');
 const session = require("express-session")
 
+
+const credentials = {"email": "example@email.com", "password": "1234"}
+
 app.use(session({
     secret: 'yourSecretKey', // Change this to a random secret key
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Set secure to true if using HTTPS
+    cookie: {secure: false} // Set secure to true if using HTTPS
 }));
 
 let books = [
@@ -185,12 +188,11 @@ function requireAuth(req, res, next) {
     try {
         if (req.session.authenticated && req.session.authenticated) {
             next()
+        } else {
+            res.sendStatus(401)
         }
-        else {
-            res.redirect("/login")
-        }
-    } catch(TypeError) {
-        res.redirect("/login")
+    } catch (TypeError) {
+        res.sendStatus(401)
     }
 
 
@@ -218,8 +220,7 @@ function validateLendJSON(json) {
 function bookExists(isbn) {
     if (books.find(book => book.isbn === isbn) === undefined) {
         return false
-    }
-    else {
+    } else {
         return true
     }
 }
@@ -244,19 +245,22 @@ function checkCustomerLends(customerID) {
 }
 
 
-app.get("/login", basicAuth({
-    users: {"test":"testpw"}, // "desk@library.example": "desk", "info@library.example": "info"
-    challenge: true,
-    realm: "My Application",
-    unauthorizedResponse: "You are not authorized"
-}),
-    (req,res)=>{
-        req.session.authenticated = true
-        res.send("You have been successfully authenticated.")
+app.post("/login", (req, res) => {
+    try {
+            if (req.body.email === credentials.email && req.body.password === credentials.password) {
+                req.session.authenticated = true
+                res.send("You have been successfully authenticated.")
+            }
+            else {
+                return res.status(401).send("You are not authenticated")
+            }
+        } catch (TypeError) {
+            res.sendStatus(401)
+        }
     }
-    )
+)
 
-app.get("/verify", (req, res)=>{
+app.get("/verify", (req, res) => {
     try {
         if (req.session.authenticated === true) {
             return res.status(200).send("Session is authenticated")
@@ -268,7 +272,7 @@ app.get("/verify", (req, res)=>{
 })
 
 
-app.delete("/logout", (req, res)=>{
+app.delete("/logout", (req, res) => {
     try {
         req.session.authenticated = false
         return res.status(204).send("Logout successful")
